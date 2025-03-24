@@ -1,0 +1,6 @@
+id=module.dpzdev.zygisk
+name=Module Dummy
+version=vs1.0
+versionCode=1
+author=Dpzdev
+description=A sample project for building Zygisk modules
