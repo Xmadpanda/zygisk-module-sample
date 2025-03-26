@@ -1,6 +1,10 @@
+import com.android.utils.cxx.io.hasExtensionIgnoreCase
+
 plugins {
     alias(libs.plugins.android.lib)
 }
+
+val libName = "dummy"
 
 android {
     namespace  = "module.dpzdev.zygisk"
@@ -13,7 +17,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags += "-std=c++17"
-                arguments += "-DCMAKE_PROJECT_NAME=Sample"
+                arguments += "-DCMAKE_PROJECT_NAME=${libName}"
             }
         }
     }
@@ -44,10 +48,27 @@ module/build/intermediates/stripped_native_libs/$type/strip$TypeDebugSymbols/out
             } else {
                 println("File tidak ditemukan : ${src.toString()}")
             }
+        }
+        tasks.register<Copy>("renameLibs$buildType") {
+            dependsOn("copyLibs${buildType}")
+            val archs = listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+            archs.forEach() { arch ->
+                val libs = "${project.layout.buildDirectory.get()}/magisk/libs/$arch/lib$libName.so"
+                val oldName = "lib$libName.so"
+                val newName = "$arch.so"
+                val destinationFolder = "${project.layout.buildDirectory}/magisk/zygisk"
+                val src = file(libs)
+                val dst = file(destinationFolder)
+                from(src) {
+                    include(oldName)
+                    rename(oldName, newName)
+                }
+                into(dst)
+            }
 
         }
 
-        variant.assembleProvider.get().finalizedBy("copyLibs$buildType")
+        variant.assembleProvider.get().finalizedBy("renameLibs$buildType")
 
     }
 }
