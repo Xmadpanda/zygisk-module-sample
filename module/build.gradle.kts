@@ -13,6 +13,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags += "-std=c++17"
+                arguments += "-DCMAKE_PROJECT_NAME=Sample"
             }
         }
     }
