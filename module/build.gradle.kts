@@ -56,7 +56,7 @@ afterEvaluate {
         variant.assembleProvider.get().finalizedBy("copyLibs$buildType")
 
         // Task untuk mengompres folder
-        tasks.register<Zip>("compressMagisk") {
+        tasks.register<Zip>("compressModule$buildType") {
             dependsOn("copyLibs$buildType")
             from(file("${project.layout.projectDirectory}/magisk")) {
                 include("**/*") // Menyertakan semua file dalam folder magisk
@@ -66,6 +66,6 @@ afterEvaluate {
         }
 
         // Menjalankan tugas kompres setelah menyalin libs
-        tasks.named("copyLibs$buildType").get().finalizedBy("compressMagisk")
+        tasks.named("copyLibs$buildType").get().finalizedBy("compressModule$buildType")
     }
 } 
